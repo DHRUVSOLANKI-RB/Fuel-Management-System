@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:title="Vehicle List"
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/vehicles"/>
+        <item
+            android:title="@string/add_user"
+            android:id="@+id/nav_adduser"
+            android:icon="@drawable/adduser512"
+            android:visible="false"/>
+        <item
+            android:title="@string/edit_vehicles"
+            android:id="@+id/nav_editvehicles"
+            android:icon="@drawable/edit"
+            android:visible="false"/>
+        <item
+            android:title="@string/connect"
+            android:id="@+id/nav_connect"
+            android:icon="@drawable/connect"
+            android:visible="false"/>
+        <item
+            android:title="@string/disconnect"
+            android:id="@+id/nav_disconnect"
+            android:icon="@drawable/disconnect"
+            android:visible="false"/>
+
+    </group>
+
+</menu>

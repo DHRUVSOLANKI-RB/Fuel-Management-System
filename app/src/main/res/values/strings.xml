@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Fuel Management System</string>
+    <string name="title_activity_user_login">UserLoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="no_device">No Device Detected!</string>
+    <string name="please_check_your_device_connection">Please Connect Your Device Again</string>
+    <string name="please_check_your_connection">Please Check Your Connection</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="fragment_dashboard">Fragment Dashboard</string>
+    <string name="navigation_open">Open navigation drawer</string>
+    <string name="navigation_close">Close navigation drawer</string>
+    <string name="fuel_management_system">Fuel Management System</string>
+    <string name="edit_vehicles">Edit Vehicles</string>
+    <string name="read_tag">Read</string>
+    <string name="write_tag">Write</string>
+    <string name="edit">Edit</string>
+    <string name="add_user">Add User</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="footer">© 2022. Developed By <a href="https://railbit.in/">Railbit Engineers Pvt Ltd </a>.</string>
+    <string name="search">Search...</string>
+</resources>

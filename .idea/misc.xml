@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/RAILBIT-LAPTOP3/Desktop/FuelManagementSystem/app/src/main/res/drawable-v24/ic_clear.xml" value="0.1705" />
+        <entry key="..\:/Users/RAILBIT-LAPTOP3/Desktop/FuelManagementSystem/app/src/main/res/drawable-v24/ic_search.xml" value="0.1705" />
+        <entry key="..\:/Users/RAILBIT-LAPTOP3/Desktop/FuelManagementSystem/app/src/main/res/layout/activity_main.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/RAILBIT-LAPTOP3/Desktop/FuelManagementSystem/app/src/main/res/layout/activity_userlogin.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/RAILBIT-LAPTOP3/Desktop/FuelManagementSystem/app/src/main/res/layout/fragment_dashboard.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/RAILBIT-LAPTOP3/Desktop/FuelManagementSystem/app/src/main/res/layout/vehicle_card_layout.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/iamro/StudioProjects/FMS final working current/FuelManagementSystem 17-10 final toggle switch/app/src/main/res/layout/app_toolbar_main.xml" value="0.21822916666666667" />
+        <entry key="..\:/Users/iamro/StudioProjects/FMS final working current/FuelManagementSystem 17-10 final toggle switch/app/src/main/res/menu/main.xml" value="0.21822916666666667" />
+        <entry key="..\:/Users/iamro/StudioProjects/FuelManagementSystem backups/FuelManagementSystem 25-09/app/src/main/res/layout/content_main.xml" value="0.16770833333333332" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 04-10 5PM/app/src/main/res/layout/fragment_dashboard.xml" value="0.264" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 05-10/app/src/main/res/layout/fragment_dashboard.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 06-10/app/src/main/res/xml/network_security_config.xml" value="0.14479166666666668" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/drawable/ic_baseline_device_off_24.xml" value="0.184" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/drawable/ic_baseline_wifi_off_24.xml" value="0.1035" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/layout/check_device_dialog.xml" value="0.264" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/layout/check_internet_dialog.xml" value="0.18958333333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/layout/fragment_dashboard.xml" value="0.18489583333333334" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 08-10/app/src/main/res/layout/vehicle_card_layout.xml" value="0.264" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 12-10 final/app/src/main/res/layout/read_tagdata.xml" value="0.26875" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 13-10 final with @solve/app/src/main/res/layout/content_main.xml" value="0.16510416666666666" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 13-10 final with @solve/app/src/main/res/menu/activity_main_drawer.xml" value="0.17135416666666667" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1695" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/activity_dashboard.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/activity_main.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/activity_userlogin.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/app_toolbar_main.xml" value="0.176" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/content_main.xml" value="0.264" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/fragment_dashboard.xml" value="0.24166666666666667" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/nav_header_main.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/layout/vehicle_card_layout.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 23-09/app/src/main/res/menu/main.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 24-09/app/src/main/res/layout/activity_main.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/drawable/ic_baseline_wifi_off_24.xml" value="0.184" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/drawable/splash_background.xml" value="0.184" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/activity_dashboard.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/activity_main.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/activity_userlogin.xml" value="0.2" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/app_toolbar_main.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/check_internet_dialog.xml" value="0.264" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/content_main.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/fragment_dashboard.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/Working current/FuelManagementSystem 26-09/app/src/main/res/layout/nav_header_main.xml" value="0.18177083333333333" />
+        <entry key="..\:/Users/iamro/StudioProjects/ftdireader/app/src/main/res/layout/activity_main.xml" value="0.24322916666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
