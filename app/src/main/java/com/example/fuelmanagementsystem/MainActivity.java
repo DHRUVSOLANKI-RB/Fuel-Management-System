@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
                     vehicleModelArrayList.forEach(vehicleModel -> {
 
-                        if(vehicleModel.getRegisno().contains(charSequence)){
+                        if(vehicleModel.getRegisno().toLowerCase().contains(charSequence.toString().toLowerCase())){
 
                             newVehicleData.add(vehicleModel);
 
@@ -204,6 +204,12 @@ public class MainActivity extends AppCompatActivity {
                             vehicledashboardRV.setAdapter(vehicleAdapter);
                             vehicledashboardRV.setVisibility(View.VISIBLE);
                             vehicleAdapter.setOnItemClickListener(onItemClickListener);
+                        }
+
+                        if(newVehicleData.isEmpty()){
+
+                            vehicledashboardRV.setAdapter(null);
+                            vehicledashboardRV.setVisibility(View.VISIBLE);
                         }
                     });
 
