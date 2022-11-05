@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
     SwitchMaterial connect_switch;
     SwipeRefreshLayout swipeRefreshLayoutdashboard;
     private ArrayList<VehicleModel> vehicleModelArrayList;
+    ArrayList<VehicleModel> newVehicleData;
+    boolean isFiltered = false;
 
     IntentFilter intentFilter;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
@@ -164,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 if(TextUtils.isEmpty(charSequence.toString())){
+
+                    isFiltered = false;
+
                     clearImageView.setVisibility(View.GONE);
 
                     VehicleAdapter vehicleAdapter = new VehicleAdapter(MainActivity.this, vehicleModelArrayList, new VehicleAdapter.ClickListener() {
@@ -181,9 +186,12 @@ public class MainActivity extends AppCompatActivity {
                     vehicleAdapter.setOnItemClickListener(onItemClickListener);
 
                 }else{
+
+                    isFiltered = true;
+
                     clearImageView.setVisibility(View.VISIBLE);
 
-                    ArrayList<VehicleModel> newVehicleData = new ArrayList<>();
+                    newVehicleData = new ArrayList<>();
 
                     vehicleModelArrayList.forEach(vehicleModel -> {
 
@@ -207,13 +215,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if(newVehicleData.isEmpty()){
-
                             vehicledashboardRV.setAdapter(null);
                             vehicledashboardRV.setVisibility(View.VISIBLE);
                         }
                     });
-
-
                 }
             }
 
@@ -762,8 +767,18 @@ public class MainActivity extends AppCompatActivity {
             tag_fuellimit ="";
             tag_regisno = "";
             System.out.println("Item "+ position + " clicked");
-            VehicleModel thisItem = vehicleModelArrayList.get(position);
+
+            VehicleModel thisItem;
+
+            if(isFiltered){
+                thisItem = newVehicleData.get(position);
+            }else{
+                thisItem = vehicleModelArrayList.get(position);
+            }
+            /*VehicleModel thisItem = vehicleModelArrayList.get(position);*/
+
             System.out.println(thisItem.getRegisno() + " " +thisItem.getFuellimit());
+            /*Toast.makeText(MainActivity.this, thisItem.getRegisno() + " " +thisItem.getFuellimit(), Toast.LENGTH_SHORT).show();*/
             write1(thisItem.getRegisno(),thisItem.getFuellimit());
         }
     };
@@ -806,7 +821,6 @@ public class MainActivity extends AppCompatActivity {
     private void  requestMultiplePermissions(){
         Dexter.withActivity(MainActivity.this)
                 .withPermissions(
-                        Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {

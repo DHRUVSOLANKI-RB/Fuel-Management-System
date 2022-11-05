@@ -23,8 +23,8 @@ public class MyPersonalApp extends Application {
 
         if ( isExternalStorageWritable() ) {
 
-            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/FTDI_new" );
-            File logDirectory = new File( appDirectory + "/logs" );
+            File appDirectory = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Joint_Inspection" );
+            File logDirectory = new File( appDirectory + "/Logs" );
             File logFile = new File( logDirectory, "logcat_" + System.currentTimeMillis() + ".txt" );
 
             // create app folder
