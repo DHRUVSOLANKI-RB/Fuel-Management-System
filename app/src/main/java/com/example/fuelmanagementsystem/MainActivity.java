@@ -855,27 +855,40 @@ public class MainActivity extends AppCompatActivity {
 
     public void start(){
 
+        //Log.e("rb-", "Start");
         HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
+
         if (!usbDevices.isEmpty()) {
+
+            //Log.e("rb-", "if");
             boolean keep = true;
             for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
                 device = entry.getValue();
             }
             int deviceVID = device.getVendorId();
-                device_name = device.getManufacturerName();
-                device_vendor = String.format(Locale.US, "Vendor Id %04X", device.getVendorId());
-                product_id = String.format(Locale.US, "Product Id %04X", device.getProductId());
+            device_name = device.getManufacturerName();
+            device_vendor = String.format(Locale.US, "Vendor Id %04X", device.getVendorId());
+            product_id = String.format(Locale.US, "Product Id %04X", device.getProductId());
 
-                connect_switch.setChecked(true);
+            connect_switch.setChecked(true);
 
-                {
-                    PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                    usbManager.requestPermission(device, pi);
-                    keep = false;
-                }
+//          PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+//          usbManager.requestPermission(device, pi);
+//          keep = false;
+
+            PendingIntent pi = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
+            }
+            else {
+                pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_ONE_SHOT);
+            }
+            usbManager.requestPermission(device, pi);
+            keep = false;
         }
         else
         {
+            Log.e("rb-", "else");
             builder("Please connect DEVICE").show();
             connect_switch.setChecked(false);
         }

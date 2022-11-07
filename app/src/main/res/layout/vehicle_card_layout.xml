@@ -38,7 +38,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:layout_width="80dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/write"
                     android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge"
