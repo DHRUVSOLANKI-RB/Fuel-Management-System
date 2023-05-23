@@ -76,6 +76,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -289,7 +290,6 @@ public class MainActivity extends AppCompatActivity {
                         if (chkrsponse()) {
                             inflate_dialogue();
                         }
-
                     }
                 }, 500);
             }
@@ -340,6 +340,7 @@ public class MainActivity extends AppCompatActivity {
                 connection = usbManager.openDevice(device);
                 serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
                 if (serialPort != null) {
+
                     if (serialPort.open()) { //Set Serial Connection Parameters.
 
                         serialPort.setBaudRate(BAUD_RATE);
@@ -410,6 +411,8 @@ public class MainActivity extends AppCompatActivity {
 
         send(header+write_length+tag_write_code+dn_tag_regisno+dn_tag_fuellimit+reserved_code+protocol_version+checksum+footer);
         tvAppend(textView,"\nTag UUID:- "+tag_uuid);
+
+        Log.d("Write UUID",tag_uuid);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -622,6 +625,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tag_regisno_string = sbregisno.append(tag_regisno_string).toString();
 
+                Log.d("Verify UUID",tag_uuid);
+
                 hashMap.put("data",access_token+tag_regisno_string+tag_uuid);
                 System.out.println("Hashmap= " + access_token+tag_regisno_string+tag_uuid);
                 tvAppend(textView,"\nVerify vehicle data sent:- "+access_token+" "+tag_regisno_string+" "+tag_uuid);
@@ -684,6 +689,8 @@ public class MainActivity extends AppCompatActivity {
                 tvAppend(textView,"\nUpdate Vehicle data sent:- "+access_token+" "+tag_regisno_string+" "+tag_uuid);
                 hashMap.put("data",access_token+tag_regisno_string+tag_uuid);
                 finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_vehicle_update);
+
+                Log.d("Update UUID",tag_uuid);
 
                 System.out.println(finalResult);
 
@@ -855,43 +862,52 @@ public class MainActivity extends AppCompatActivity {
 
     public void start(){
 
-        //Log.e("rb-", "Start");
-        HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
+        try {
 
-        if (!usbDevices.isEmpty()) {
+            //Log.e("rb-", "Start");
+            HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
 
-            //Log.e("rb-", "if");
-            boolean keep = true;
-            for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
-                device = entry.getValue();
-            }
-            int deviceVID = device.getVendorId();
-            device_name = device.getManufacturerName();
-            device_vendor = String.format(Locale.US, "Vendor Id %04X", device.getVendorId());
-            product_id = String.format(Locale.US, "Product Id %04X", device.getProductId());
+            if (!usbDevices.isEmpty()) {
 
-            connect_switch.setChecked(true);
+                //Log.e("rb-", "if");
+                boolean keep = true;
+                for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
+                    device = entry.getValue();
+                }
+                int deviceVID = device.getVendorId();
+                device_name = device.getManufacturerName();
+                device_vendor = String.format(Locale.US, "Vendor Id %04X", device.getVendorId());
+                product_id = String.format(Locale.US, "Product Id %04X", device.getProductId());
+
+                connect_switch.setChecked(true);
 
 //          PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(ACTION_USB_PERMISSION), 0);
 //          usbManager.requestPermission(device, pi);
 //          keep = false;
 
-            PendingIntent pi = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
+                PendingIntent pi = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
+                }
+                else {
+                    pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_ONE_SHOT);
+                }
+                usbManager.requestPermission(device, pi);
+                keep = false;
             }
-            else {
-                pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_ONE_SHOT);
+            else
+            {
+                Log.d("rb-", "Device not conected!");
+                builder("Please connect DEVICE").show();
+                connect_switch.setChecked(false);
             }
-            usbManager.requestPermission(device, pi);
-            keep = false;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.d("checking device connection-", e.toString());
         }
-        else
-        {
-            Log.e("rb-", "else");
-            builder("Please connect DEVICE").show();
-            connect_switch.setChecked(false);
-        }
+
+
     }
 
     public void send(String command){
@@ -962,35 +978,195 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean chkrsponse(){
 
-        if(response.equals(Command.emptytagresponse_read.replaceAll("\\s", "")))
-        {
-            builder("Tag not present").show();
-            return false;
-        }
-        else if(response.equals(Command.nack_read.replaceAll("\\s", "")))
-        {
-            builder("Wrong command").show();
-            return false;
-        }
-        else if (response.isEmpty()){
-            return false;
-        }
-        else{
-            response = response.replaceAll(Command.ack_read.replaceAll("\\s", ""), "");
-            tag_regisno = response.substring(6,26);
-            tag_fuellimit = response.substring(26,30);
-            tag_uuid = response.substring(38,52);
-            tag_regisno = hexToASCII(tag_regisno);
-            tag_fuellimit = fuel_limit_value(tag_fuellimit);
-            tvAppend(textView,"\nRegisNo:- " + tag_regisno);
-            tvAppend(textView,"\nFuel Limit:- " + tag_fuellimit);
-            tvAppend(textView,"\nUUID:- " + tag_uuid);
-            if ((tag_regisno + tag_fuellimit).equals(empty_data.replaceAll("\\s", "")))
-            {
-                tvAppend(textView,"\nTag Data Empty.");
+        try {
+
+            Log.d("Read Raw Response:-", response);
+
+            if(response.isEmpty()){
+
+                builder("Please reconnect cable").show();
                 return false;
             }
+
+            if(response.contains("AA18")){
+
+                Log.d("contains AA18:-", response);
+
+                String[] array_response = response.split("AA18");
+
+                String response_needed = "AA18" + array_response[1];
+
+                Log.d("response_needed:-", response_needed);
+
+                String array_checksum = response_needed.substring(4,52);
+
+                String cmd_checksum = response_needed.substring(52,54).toLowerCase();
+
+                Log.d("array_checksum:-", array_checksum);
+
+                String calculated_checksum = twos_complement(hextoIntSum(array_checksum));
+
+                Log.d("checksum:-", calculated_checksum);
+
+                if(calculated_checksum.toLowerCase().equals(cmd_checksum)){
+
+                    Log.d("Read Response 2:-", response_needed);
+
+                    tag_regisno = response_needed.substring(6,26);
+                    Log.d("Read Hex Registration Number:-", tag_regisno);
+
+                    tag_fuellimit = response_needed.substring(26,30);
+                    Log.d("Read Fuel Limit:-", tag_fuellimit);
+
+                    tag_uuid = response_needed.substring(38,52);
+                    Log.d("Read UUID:-", tag_uuid);
+
+                    tag_regisno = hexToASCII(tag_regisno);
+                    Log.d("Read ASCII Registration Number:-", tag_regisno);
+
+                    tag_fuellimit = fuel_limit_value(tag_fuellimit);
+                    tvAppend(textView,"\nRegisNo:- " + tag_regisno);
+                    tvAppend(textView,"\nFuel Limit:- " + tag_fuellimit);
+                    tvAppend(textView,"\nUUID:- " + tag_uuid);
+                    if ((tag_regisno + tag_fuellimit).equals(empty_data.replaceAll("\\s", "")))
+                    {
+                        tvAppend(textView,"\nTag Data Empty.");
+                        return false;
+                    }
+                }else{
+
+                    Log.d("response:-", "Wrong checksum");
+
+                    builder("Incorrect UID, Please try again....").show();
+                    return false;
+                }
+
+            }else if(response.contains("AA028014")){
+
+                Log.d("response:-", "Tag not present");
+
+                builder("Tag not present").show();
+                return false;
+
+            }else{
+
+                String response_1 = response.substring(0,12);
+                Log.d("Read Response 1:-", response_1);
+
+                if(!response_1.isEmpty()){
+                    response_1 = response_1.replaceAll("\\s", "");
+                }
+
+                String emptytagresponse_read = Command.emptytagresponse_read.replaceAll("\\s", "");
+                String nack_read = Command.nack_read.replaceAll("\\s", "");
+                String ack_read = Command.ack_read.replaceAll("\\s", "");
+
+                if(response_1.equals(nack_read)){
+
+                    builder("Wrong command").show();
+                    return false;
+
+                }else if(response_1.equals(ack_read)) {
+
+                }
+            }
+
+
+
+
+            /*String response_1 = response.substring(0,12);
+            Log.d("Read Response 1:-", response_1);
+
+            String response_2 = response.substring(12);
+            Log.d("Read Response 2:-", response_2);
+
+
+            if(!response_1.isEmpty()){
+                response_1 = response_1.replaceAll("\\s", "");
+            }
+
+            if(!response_2.isEmpty()){
+                response_2 = response_2.replaceAll("\\s", "");
+            }
+
+            String emptytagresponse_read = Command.emptytagresponse_read.replaceAll("\\s", "");
+            String nack_read = Command.nack_read.replaceAll("\\s", "");
+            String ack_read = Command.ack_read.replaceAll("\\s", "");
+
+
+            if(response_1.equals(nack_read)){
+
+                builder("Wrong command").show();
+                return false;
+
+            }else if(response_1.equals(ack_read)){
+
+                if(response_2.equals(emptytagresponse_read)){
+
+                    Log.d("response:-", "Tag not present");
+
+                    builder("Tag not present").show();
+                    return false;
+
+                }else if(response_2.contains("AA18")){
+
+                    String array_checksum = response_2.substring(4,52);
+
+                    String cmd_checksum = response_2.substring(52,54).toLowerCase();
+
+                    Log.d("array_checksum:-", array_checksum);
+
+                    String calculated_checksum = twos_complement(hextoIntSum(array_checksum));
+
+                    Log.d("checksum:-", calculated_checksum);
+
+                    if(calculated_checksum.toLowerCase().equals(cmd_checksum)){
+
+                        Log.d("Read Response 2:-", response_2);
+
+                        tag_regisno = response_2.substring(6,26);
+                        Log.d("Read Hex Registration Number:-", tag_regisno);
+
+                        tag_fuellimit = response_2.substring(26,30);
+                        Log.d("Read Fuel Limit:-", tag_fuellimit);
+
+                        tag_uuid = response_2.substring(38,52);
+                        Log.d("Read UUID:-", tag_uuid);
+
+                        tag_regisno = hexToASCII(tag_regisno);
+                        Log.d("Read ASCII Registration Number:-", tag_regisno);
+
+                        tag_fuellimit = fuel_limit_value(tag_fuellimit);
+                        tvAppend(textView,"\nRegisNo:- " + tag_regisno);
+                        tvAppend(textView,"\nFuel Limit:- " + tag_fuellimit);
+                        tvAppend(textView,"\nUUID:- " + tag_uuid);
+                        if ((tag_regisno + tag_fuellimit).equals(empty_data.replaceAll("\\s", "")))
+                        {
+                            tvAppend(textView,"\nTag Data Empty.");
+                            return false;
+                        }
+                    }else{
+
+                        Log.d("response:-", "Wrong checksum");
+
+                        builder("Incorrect UID, Please try again....").show();
+                        return false;
+                    }
+                }
+
+            }else{
+
+                Log.d("response:-", "not ack, not nack");
+
+                builder("Please reconnect cable!").show();
+                return false;
+            }*/
+
+        }catch (Exception e){
+
+            Log.d("Error while reading:-", e.toString());
         }
+
         return true;
     }
 

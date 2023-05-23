@@ -44,6 +44,7 @@
                     android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar.Bridge"
                     android:backgroundTint="@color/colorPrimary"
                     android:layout_marginBottom="2dp"
+                    android:textColor="@color/white"
                     android:text="@string/write_tag" />
 
             </LinearLayout>

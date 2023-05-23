@@ -19,13 +19,14 @@ public class MyPersonalApp extends Application {
      * Called when the application is starting, before any activity, service, or receiver objects (excluding content providers) have been created.
      */
     public void onCreate() {
+
         super.onCreate();
 
         if ( isExternalStorageWritable() ) {
 
-            File appDirectory = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Joint_Inspection" );
+            File appDirectory = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Tag_Management" );
             File logDirectory = new File( appDirectory + "/Logs" );
-            File logFile = new File( logDirectory, "logcat_" + System.currentTimeMillis() + ".txt" );
+            File logFile = new File( logDirectory, "Tag_Management_logcat_" + System.currentTimeMillis() + ".txt" );
 
             // create app folder
             if ( !appDirectory.exists() ) {
