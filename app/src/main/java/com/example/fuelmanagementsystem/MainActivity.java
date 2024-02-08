@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
     HttpUrl httpUrl = new HttpUrl();
-    ProgressDialog progressDialog;
+    ProgressDialog progressDialog  ;
+    ;
     String user_id = "", finalResult = "",user_type = "";
 
     public static final String MyPREFERENCES = "MyPrefs";
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         sp_login = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         sp_connected = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         editor_splogin = sp_login.edit();
+        progressDialog = ProgressDialog.show(MainActivity.this, "Fetching vehicle list.\nPlease Wait...", null, true, true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -175,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                     VehicleAdapter vehicleAdapter = new VehicleAdapter(MainActivity.this, vehicleModelArrayList, new VehicleAdapter.ClickListener() {
                         @Override
                         public void onPositionClicked(int position) {
-
                         }
                     }, writeClicklistner);
 
@@ -254,20 +255,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.this.registerReceiver(broadcastReceiver, filter);
 
         mail = sp_login.getString("mail","");
-        ProgressDialog progressDialog1 = ProgressDialog.show(MainActivity.this, "Fetching vehicle list...", null, true, true);
 
-        new CountDownTimer(3000, 200) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onFinish() {
-                progressDialog1.dismiss();
-                vehicle_list_api();
-            }
-        }.start();
 
         if (connection == null) {
             connect_switch.setChecked(false);
@@ -314,9 +302,6 @@ public class MainActivity extends AppCompatActivity {
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_dashboard,R.id.nav_adduser,R.id.nav_editvehicles,R.id.nav_connect).setDrawerLayout(drawerLayout).build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
 
     }
 
@@ -431,7 +416,6 @@ public class MainActivity extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(MainActivity.this, "Loading", null, true, true);
             }
 
             @Override
@@ -439,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
 
                 super.onPostExecute(httpResponseMsg);
 
-//                progressDialog.dismiss();
+
 
                 System.out.println("httpResponseMsg- " + httpResponseMsg);
                 String data_response = httpResponseMsg;
@@ -458,6 +442,7 @@ public class MainActivity extends AppCompatActivity {
                     access_token = response_array[1];
                     editor_splogin.putString("token",access_token);
                     editor_splogin.apply();
+                    vehicle_list_api();
 //                    tvAppend(textView,"\n"+access_token);
                 }
 
@@ -484,14 +469,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void vehicle_list_api() {
-
+//        ProgressDialog progressDialog1 = ProgressDialog.show(MainActivity.this, "Fetching vehicle list...", null, true, true);
         class GetFMSDataClass extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(MainActivity.this, "Fetching vehicle list...", null, true, true);
+//               progressDialog = ProgressDialog.show(MainActivity.this, "Fetching vehicle list...", null, true, true);
             }
 
             @Override
@@ -499,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
 
                 super.onPostExecute(httpResponseMsg);
 
-//                progressDialog.dismiss();
+
                 String response = httpResponseMsg;
                 tvAppend(textView,"\n"+httpResponseMsg);
                 response = response.replaceAll("\"","");
@@ -545,7 +530,12 @@ public class MainActivity extends AppCompatActivity {
                     vehicledashboardRV.setAdapter(vehicleAdapter);
                     vehicledashboardRV.setVisibility(View.VISIBLE);
                     vehicleAdapter.setOnItemClickListener(onItemClickListener);
+
                 }
+                new Handler().postDelayed(() -> {
+                    progressDialog.dismiss();
+                },500);
+
             }
 
             @Override
@@ -796,11 +786,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
-    }
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
