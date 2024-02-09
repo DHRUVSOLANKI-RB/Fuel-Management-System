@@ -10,7 +10,7 @@ android {
         minSdk 23
         targetSdk 32
         versionCode 1
-        versionName "1.2-Oneplus-Support"
+        versionName "2.1.09022024-Dynamic-Loading"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

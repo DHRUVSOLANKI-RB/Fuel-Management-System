@@ -9,7 +9,6 @@ import static com.example.fuelmanagementsystem.Command.protocol_version;
 import static com.example.fuelmanagementsystem.Command.read_command;
 import static com.example.fuelmanagementsystem.Command.reserved;
 import static com.example.fuelmanagementsystem.Command.tag_write_code;
-import static com.example.fuelmanagementsystem.Command.write_command_empty;
 import static com.example.fuelmanagementsystem.Command.write_length;
 
 import android.Manifest;
@@ -54,10 +53,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -76,8 +72,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -88,6 +82,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView vehicledashboardRV;
+    private TextView emptyView;
     private AppBarConfiguration mAppBarConfiguration;
     TextView signout;
     Button read;
@@ -106,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
     String access_token = "";
     String mail = "";
     boolean writechk = true;
-    HashMap<String, String> hashMap = new HashMap<>();
-    HttpParse httpParse = new HttpParse();
+    HashMap<String, String> hashMap;
+    HttpParse httpParse;
     HttpUrl httpUrl = new HttpUrl();
     ProgressDialog progressDialog  ;
     ;
@@ -131,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView clearImageView;
     EditText search_edit_text;
+
+    private int firstVisibleItem, visibleItemCount, totalItemCount;
+    private boolean loading = true;
+    private int offset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +226,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
 
+                String searched_text = search_edit_text.getEditableText().toString();
+                //Toast.makeText(MainActivity.this, searched_text, Toast.LENGTH_SHORT).show();
+
+                //progressDialog = ProgressDialog.show(MainActivity.this, "Please Wait...", null, true, true);
+                searched_vehicle_list_api(searched_text);
+
+                /*if(searched_text.length() > 3){
+                    progressDialog = ProgressDialog.show(MainActivity.this, "Please Wait...", null, true, true);
+                    searched_vehicle_list_api(searched_text);
+
+                }else if(searched_text.length() == 0){
+                    progressDialog = ProgressDialog.show(MainActivity.this, "Please Wait...", null, true, true);
+                    vehicle_list_api();
+                }*/
+
             }
         });
 
@@ -234,6 +248,8 @@ public class MainActivity extends AppCompatActivity {
 
         intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeListener, intentFilter);
+
+        emptyView = (TextView) findViewById(R.id.empty_view);
 
         vehicledashboardRV = findViewById(R.id.vehicle_list);
         connect_switch = findViewById(R.id.connect_switch);
@@ -243,7 +259,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 swipeRefreshLayoutdashboard.setRefreshing(false);
-                vehicle_list_api();
+                //vehicle_list_api();
+                searched_vehicle_list_api("");
             }
         });
         textView = (TextView) findViewById(R.id.textView);
@@ -317,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             response = response.replaceAll("\\s", "");
         }
     };
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {if (intent.getAction().equals(ACTION_USB_PERMISSION)) {
             boolean granted = intent.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED);
@@ -442,7 +459,8 @@ public class MainActivity extends AppCompatActivity {
                     access_token = response_array[1];
                     editor_splogin.putString("token",access_token);
                     editor_splogin.apply();
-                    vehicle_list_api();
+                    //vehicle_list_api();
+                    searched_vehicle_list_api("");
 //                    tvAppend(textView,"\n"+access_token);
                 }
 
@@ -454,8 +472,11 @@ public class MainActivity extends AppCompatActivity {
 //                mail = "hemesh";
                 mail = sp_login.getString("mail","");
                 System.out.println(mail);
+
+                hashMap = new HashMap<>();
                 hashMap.put("data",mail);
 //                tvAppend(textView,"\nMail:- "+mail);
+                httpParse = new HttpParse();
                 finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_fmsToken);
 
                 System.out.println(finalResult);
@@ -466,6 +487,109 @@ public class MainActivity extends AppCompatActivity {
 
         GetFMSTokenClass getFMSTokenClass = new GetFMSTokenClass();
         getFMSTokenClass.execute();
+    }
+
+    public void searched_vehicle_list_api(String searched_text) {
+//        ProgressDialog progressDialog1 = ProgressDialog.show(MainActivity.this, "Fetching vehicle list...", null, true, true);
+        class GetFMSDataClass extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+//               progressDialog = ProgressDialog.show(MainActivity.this, "Fetching vehicle list...", null, true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String httpResponseMsg) {
+
+                super.onPostExecute(httpResponseMsg);
+
+
+                String response = httpResponseMsg;
+                tvAppend(textView,"\n"+httpResponseMsg);
+                response = response.replaceAll("\"","");
+
+                if(response.equals("0")){
+                    /*new MaterialAlertDialogBuilder(MainActivity.this).setTitle("No Data Found").setPositiveButton("Ok", (dialogInterface, i) -> {
+                    }).show().setCanceledOnTouchOutside(false);
+                    vehicledashboardRV.setAdapter(null);*/
+
+                    vehicledashboardRV.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+                else if(response.isEmpty()){
+//                    new MaterialAlertDialogBuilder(MainActivity.this).setTitle("Something went wrong").setPositiveButton("Ok", (dialogInterface, i) -> {
+//                    }).show().setCanceledOnTouchOutside(false);
+                    //vehicledashboardRV.setAdapter(null);
+
+                    vehicledashboardRV.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+                else{
+
+
+
+                    String[] fms_data_array = response.split(",");
+                    System.out.println(fms_data_array.length);
+                    System.out.println(Arrays.toString(fms_data_array));
+                    vehicleModelArrayList = new ArrayList<>();
+
+                    for(int i = 0; i<fms_data_array.length; i++){
+//                        JSONObject obj_drawing = new JSONObject(json_data.getString(i));
+                        String fms_data = fms_data_array[i];
+                        String dn_regisno = fms_data.substring(0,10);
+                        String dn_fuellimit = fms_data.substring(10);
+                        System.out.println(dn_regisno + " " + dn_fuellimit);
+                        dn_regisno=dn_regisno.replaceAll("@","");
+                        vehicleModelArrayList.add(new VehicleModel(dn_regisno,dn_fuellimit));
+                    }
+
+                    VehicleAdapter vehicleAdapter = new VehicleAdapter(MainActivity.this, vehicleModelArrayList, new VehicleAdapter.ClickListener() {
+                        @Override
+                        public void onPositionClicked(int position) {
+                            VehicleModel thisItem = vehicleModelArrayList.get(position);
+                            //Toast.makeText(getActivity(), "ITEM PRESSED = " + thisItem.getInspection_uuid(), Toast.LENGTH_SHORT).show();
+                            System.out.println("Item "+position + " clicked");
+                            System.out.println("Main Activity Api Listner Clicked");
+                        }
+                    }, writeClicklistner);
+
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+
+                    vehicledashboardRV.setLayoutManager(linearLayoutManager);
+                    vehicledashboardRV.setAdapter(vehicleAdapter);
+                    vehicledashboardRV.setVisibility(View.VISIBLE);
+                    vehicleAdapter.setOnItemClickListener(onItemClickListener);
+
+                    vehicledashboardRV.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+
+                }
+                new Handler().postDelayed(() -> {
+                    progressDialog.dismiss();
+                },500);
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                System.out.println(access_token);
+
+                hashMap = new HashMap<>();
+                hashMap.put("data",access_token);
+                hashMap.put("searched_text",searched_text);
+                httpParse = new HttpParse();
+                finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_searched_vehicle_list);
+                System.out.println("finalResult- "+finalResult);
+
+                return finalResult;
+            }
+        }
+
+        GetFMSDataClass getFMSDataClass = new GetFMSDataClass();
+        getFMSDataClass.execute();
     }
 
     public void vehicle_list_api() {
@@ -504,6 +628,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(fms_data_array.length);
                     System.out.println(Arrays.toString(fms_data_array));
                     vehicleModelArrayList = new ArrayList<>();
+
                     for(int i = 0; i<fms_data_array.length; i++){
 //                        JSONObject obj_drawing = new JSONObject(json_data.getString(i));
                         String fms_data = fms_data_array[i];
@@ -543,10 +668,11 @@ public class MainActivity extends AppCompatActivity {
 
                 System.out.println(access_token);
 
+                hashMap = new HashMap<>();
                 hashMap.put("data",access_token);
+                httpParse = new HttpParse();
                 finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_vehicle_list);
-                System.out.println(finalResult);
-
+                System.out.println("finalResult- "+finalResult);
 
                 return finalResult;
             }
@@ -617,9 +743,11 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("Verify UUID",tag_uuid);
 
+                hashMap = new HashMap<>();
                 hashMap.put("data",access_token+tag_regisno_string+tag_uuid);
                 System.out.println("Hashmap= " + access_token+tag_regisno_string+tag_uuid);
                 tvAppend(textView,"\nVerify vehicle data sent:- "+access_token+" "+tag_regisno_string+" "+tag_uuid);
+                httpParse = new HttpParse();
                 finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_vehicle_verify);
 
                 System.out.println(finalResult);
@@ -677,7 +805,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tag_regisno_string = sbregisno.append(tag_regisno_string).toString();
                 tvAppend(textView,"\nUpdate Vehicle data sent:- "+access_token+" "+tag_regisno_string+" "+tag_uuid);
+
+                hashMap = new HashMap<>();
                 hashMap.put("data",access_token+tag_regisno_string+tag_uuid);
+                httpParse = new HttpParse();
                 finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_vehicle_update);
 
                 Log.d("Update UUID",tag_uuid);
@@ -729,8 +860,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
 
+                hashMap = new HashMap<>();
                 hashMap.put("data",access_token+mail);
                 tvAppend(textView,"\n"+access_token+mail);
+                httpParse = new HttpParse();
                 finalResult = httpParse.getRequest(hashMap, httpUrl.HttpURL_vehicle_logout );
 
                 System.out.println(finalResult);
