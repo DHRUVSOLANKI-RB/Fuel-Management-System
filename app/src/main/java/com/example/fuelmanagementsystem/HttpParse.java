@@ -35,7 +35,6 @@ public class HttpParse {
 
             System.out.println("get url- "+url);
 
-
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
             //InputStream in = httpURLConnection.getInputStream();
